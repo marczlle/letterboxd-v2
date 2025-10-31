@@ -1,65 +1,171 @@
 import Image from "next/image";
+import Header from './components/Header';
+import { Heart, Star, Search, Info, User, MessageCircle } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="">
+
+      <title>Letter Box - Pagina Inicial</title>
+
+      <div>
+
+        <Header/>
+
+        {/* Imagem Banner */}
+        
+        <Image 
+          src="/images/banner3.png"
+          width={1478}
+          height={829}
+          alt="Background Image"
+          className="absolute lg:top-[-150] md:top-0 left-0 -z-10 w-full h-[full] mask-[linear-gradient(to_bottom,black_70%,transparent_100%)]"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+
+        {/* Blur embaixo da Header */}
+
+        <div className="absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute w-full h-[100px] bg-[#000DA1]/50 blur-[120px] top-0 left-0"></div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Futuro componente de filmes */}
+        {/* TODO */}
+        <div className="flex flex-row justify-center items-center gap-16 mt-48">
+          <h1 className="text-7xl">FILME</h1>
+          <h1 className="text-7xl">FILME</h1>
+          <h1 className="text-7xl">FILME</h1>
+          <h1 className="text-7xl">FILME</h1>
         </div>
-      </main>
-    </div>
+
+        {/* Content Wraper */}
+        <div className="mt-82 mx-115 flex flex-col justify-center items-center gap-4 mb-18">
+
+          {/* Funções do site */}
+          <div className="flex flex-col gap-4 mb-8">
+
+            <div className="flex flex-row gap-4">
+              <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
+                <Heart className="w-8 h-8 shrink-0 fill-slate-200"/>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Mostre seus filmes mais curtidos com um "Gostei"</h1>
+              </div>
+              <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
+                <Star className="w-8 h-8 shrink-0 fill-slate-200"/>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Avalie seu ultimo filme assistido de 0 a 5 estrelas</h1>
+              </div>
+              <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
+                <Search className="w-8 h-8 shrink-0 fill-slate-200"/>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Procure por filmes que você já assistiu ou pretende assistir</h1>
+              </div>
+            </div>
+
+            <div className="flex flex-row gap-4">
+              <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
+                <Info className="w-8 h-8 shrink-0 "/>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Veja informações detalhadas sobre os filmes que você quiser</h1>
+              </div>
+              <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
+                <User className="w-8 h-8 shrink-0 fill-slate-200"/>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Siga outros usuarios para acompanhar suas reviews mais recentes (Em breve)</h1>
+              </div>
+              <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
+                <MessageCircle className="w-8 h-8 shrink-0 fill-slate-200"/>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Converse com amigos por chat privado ou nos comentarios (em breve)</h1>
+              </div>
+            
+            </div>
+
+          </div>
+
+          {/* Listas de filmes */}
+          <div className="w-full">
+
+            <div className="w-full flex flex-col justify-center items-center mb-8">
+
+              <div className="flex flex-row w-full border-b justify-between border-[#CC083E] mb-6">
+
+                <h1 className="text-1xl text-slate-300">FILMES MAIS VOTADOS</h1>
+
+                {/* TODO */}
+                <button className="cursor-pointer">
+                  <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
+                </button>
+
+              </div>
+
+              {/* TODO */}
+              <div className="flex flex-row gap-4">
+                <h1 className="text-4xl">FILME</h1>
+                <h1 className="text-4xl">FILME</h1>
+                <h1 className="text-4xl">FILME</h1>
+                <h1 className="text-4xl">FILME</h1>
+              </div>
+
+            </div>
+
+            <div className="w-full flex flex-col justify-center items-center mb-8">
+
+              <div className="flex flex-row w-full border-b justify-between border-[#CC083E] mb-6">
+
+                <h1 className="text-1xl text-slate-300">ADICIONADOS RECENTEMENTE</h1>
+
+                {/* TODO */}
+                <button className="cursor-pointer">
+                  <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
+                </button>
+
+              </div>
+
+              {/* TODO */}
+              <div className="flex flex-row gap-4">
+                <h1 className="text-4xl">FILME</h1>
+                <h1 className="text-4xl">FILME</h1>
+                <h1 className="text-4xl">FILME</h1>
+                <h1 className="text-4xl">FILME</h1>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Avaliações e usuarios populares */}
+          <div className="flex flex-row mt-8 gap-24 w-full justify-between items-start">
+
+            <div className="w-[60%]">
+
+              <h1 className="text-1xl text-slate-300 border-b border-[#CC083E]">AVALIAÇÕES POPULARES ESSA SEMANA</h1>
+              
+              {/* TODO */}
+              <div className="flex flex-col">
+                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
+                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
+                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
+                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
+                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
+                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
+              </div>
+
+            </div>
+
+            <div className="w-[40%]">
+
+              <h1 className="text-1xl text-slate-300 border-b border-[#CC083E]">USUARIOS POPULARES</h1>
+
+              {/* TODO */}
+              <div className="flex flex-col">
+                <h1 className="text-4xl mt-4">USUARIO</h1>
+                <h1 className="text-4xl mt-4">USUARIO</h1>
+                <h1 className="text-4xl mt-4">USUARIO</h1>
+              </div>
+
+            </div>
+
+          </div>  
+          
+        </div>
+
+      </div>
+      
+    </main>
   );
+  
 }
