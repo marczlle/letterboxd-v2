@@ -3,6 +3,7 @@ import Image from "next/image";
 import Login from "./Login";
 import Cadastro from "./Cadastro";
 import React, { useState } from "react";
+import Link from "next/link";
 
 export default function Header() {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -28,15 +29,17 @@ export default function Header() {
 
                 <div className="flex gap-10">
 
-                    {/* TODO */}
-                    <button>
-                        <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">INICIO</span>
-                    </button>
+                    <Link href={"./"}>
+                        <button>
+                            <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">INICIO</span>
+                        </button>
+                    </Link>
                     
-                    {/* TODO */}
-                    <button>
-                        <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">FILMES</span>
-                    </button>
+                    <Link href={"./movies"}>
+                        <button>
+                            <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">FILMES</span>
+                        </button>
+                    </Link>
 
                     {/* TODO */}
                     <div>
@@ -48,12 +51,10 @@ export default function Header() {
                 {!isLoginOpen ? (
                 <div className="flex gap-10 items-center justify-center">
 
-                    {/* TODO */}
                     <button onClick={() => setIsLoginOpen(true)}>
                         <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">ENTRAR</span>
                     </button>
 
-                    {/* TODO */}
                     <button onClick={() => setIsCadastroOpen(true)}>
                         <span className="bg-[#CC083E] hover:bg-[#8b092e] cursor-pointer text-[1.3rem] rounded-2xl p-2 px-4 leading-none">CADASTRE-SE</span>
                     </button>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Header from './components/Header';
+import Link from "next/link";
 import { Heart, Star, Search, Info, User, MessageCircle } from "lucide-react";
 
 export default function Home() {
@@ -86,9 +87,11 @@ export default function Home() {
                 <h1 className="text-1xl text-slate-300">FILMES MAIS VOTADOS</h1>
 
                 {/* TODO */}
-                <button className="cursor-pointer">
-                  <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
-                </button>
+                <Link href={"/movies"}>
+                  <button className="cursor-pointer">
+                    <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
+                  </button>
+                </Link>
 
               </div>
 
@@ -109,9 +112,11 @@ export default function Home() {
                 <h1 className="text-1xl text-slate-300">ADICIONADOS RECENTEMENTE</h1>
 
                 {/* TODO */}
-                <button className="cursor-pointer">
-                  <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
-                </button>
+                <Link href={"/movies"}>
+                  <button className="cursor-pointer">
+                    <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
+                  </button>
+                </Link>
 
               </div>
 

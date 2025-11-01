@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import { X } from "lucide-react";
+import { registerUser } from "@/app/hooks/user-service/route";
 
 export default function Cadastro({ setIsCadastroOpen }: { setIsCadastroOpen: (value: boolean) => void }) {
     const [email, setEmail] = useState("");
@@ -13,7 +14,12 @@ export default function Cadastro({ setIsCadastroOpen }: { setIsCadastroOpen: (va
         e.preventDefault();
         setLoading(true);
     
-        console.log("registrando", { email, senha, usuario });
+        registerUser(usuario, email, senha)
+            .then((data) => {
+                console.log("User registered successfully:", data);
+            }) .catch((error) => {
+                console.error("Error registering user:", error);
+            });
     
         // fecha o modal
         setIsCadastroOpen(false);

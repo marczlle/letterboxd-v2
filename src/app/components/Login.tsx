@@ -1,9 +1,10 @@
 'use client';
 import React, { useState } from "react";
 import { X } from "lucide-react";
+import { login } from "@/app/hooks/user-service/route";
 
 export default function Login({ setIsLoginOpen }: { setIsLoginOpen: (value: boolean) => void }) {
-    const [email, setEmail] = useState("");
+    const [usuario, setUsuario] = useState("");
     const [senha, setSenha] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -12,7 +13,12 @@ export default function Login({ setIsLoginOpen }: { setIsLoginOpen: (value: bool
         e.preventDefault();
         setLoading(true);
 
-        console.log("Logging in with", { email, senha });
+        login(usuario, senha)
+            .then((data) => {
+                console.log("User logged in successfully:", data);
+            }) .catch((error) => {
+                console.error("Error logging in user:", error);
+            });
 
         // fecha o modal
         setIsLoginOpen(false);
@@ -31,8 +37,8 @@ export default function Login({ setIsLoginOpen }: { setIsLoginOpen: (value: bool
                     <label className="text-slate-400">Usuario ou Email</label>
                     <input
                         type="text"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        value={usuario}
+                        onChange={(e) => setUsuario(e.target.value)}
                         required
                         className="bg-[#23282c] border border-slate-600 rounded-md p-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#CC083E]"
                     />
