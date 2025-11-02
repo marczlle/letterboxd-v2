@@ -37,7 +37,7 @@ export async function login(usuario: string, senha: string) {
     
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(`Error registering user: ${errorData.message}`);
+            throw new Error(`Error registering user: ${errorData.error}`); // Correto
         }
 
         const data = await response.json();

@@ -1,9 +1,12 @@
 import Image from "next/image";
 import Header from './components/Header';
+import Movie from './components/Movie';
 import Link from "next/link";
 import { Heart, Star, Search, Info, User, MessageCircle } from "lucide-react";
 
 export default function Home() {
+
+
   return (
     <main className="">
 
@@ -31,11 +34,8 @@ export default function Home() {
 
         {/* Futuro componente de filmes */}
         {/* TODO */}
-        <div className="flex flex-row justify-center items-center gap-16 mt-48">
-          <h1 className="text-7xl">FILME</h1>
-          <h1 className="text-7xl">FILME</h1>
-          <h1 className="text-7xl">FILME</h1>
-          <h1 className="text-7xl">FILME</h1>
+        <div className="flex flex-row justify-center items-center gap-8 mt-18">
+          <Movie posterPath={'5uqz8MbGts35uO7ESz86kviVgFO.jpg'}/>
         </div>
 
         {/* Content Wraper */}
