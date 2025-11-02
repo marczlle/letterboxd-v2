@@ -2,6 +2,7 @@ import Image from "next/image";
 import Header from './components/Header';
 import Movie from './components/Movie';
 import Link from "next/link";
+import Review from "@/app/components/Review";
 import { Heart, Star, Search, Info, User, MessageCircle } from "lucide-react";
 
 export default function Home() {
@@ -36,10 +37,13 @@ export default function Home() {
         {/* TODO */}
         <div className="flex flex-row justify-center items-center gap-8 mt-18">
           <Movie posterPath={'5uqz8MbGts35uO7ESz86kviVgFO.jpg'}/>
+          <Movie posterPath={'/gmjihTFH7ROwJuthIZvoLC99AtS.jpg'}/>
+          <Movie posterPath={'/92WK6MVknFcyBoYmhkH59jS3Xpv.jpg'}/>
+          <Movie posterPath={'/gzPVbOSvGuS0KWBA8wf4omeFF4i.jpg'}/>
         </div>
 
         {/* Content Wraper */}
-        <div className="mt-82 mx-115 flex flex-col justify-center items-center gap-4 mb-18">
+        <div className="mt-32 mx-115 flex flex-col justify-center items-center gap-4 mb-18">
 
           {/* Funções do site */}
           <div className="flex flex-col gap-4 mb-8">
@@ -97,10 +101,12 @@ export default function Home() {
 
               {/* TODO */}
               <div className="flex flex-row gap-4">
-                <h1 className="text-4xl">FILME</h1>
-                <h1 className="text-4xl">FILME</h1>
-                <h1 className="text-4xl">FILME</h1>
-                <h1 className="text-4xl">FILME</h1>
+                <Movie posterPath={'/s0z9xkEjJ7x9V3OC7NhZmck2MSH.jpg'} size="small"/>
+                <Movie posterPath={'/gmjihTFH7ROwJuthIZvoLC99AtS.jpg'} size="small"/>
+                <Movie posterPath={'/frZj5djlU9hFEjMcL21RJZVuG5O.jpg'} size="small"/>
+                <Movie posterPath={'/vo6osRMn09BulzfMBlS2BlK9Sgq.jpg'} size="small"/>
+                <Movie posterPath={'/ewKJEjLSZEp1Qq4Dl9W9zEld5gp.jpg'} size="small"/>
+                <Movie posterPath={'/3BFR30kh0O3NKR1Sfea3HXCG6hw.jpg'} size="small"/>
               </div>
 
             </div>
@@ -122,10 +128,12 @@ export default function Home() {
 
               {/* TODO */}
               <div className="flex flex-row gap-4">
-                <h1 className="text-4xl">FILME</h1>
-                <h1 className="text-4xl">FILME</h1>
-                <h1 className="text-4xl">FILME</h1>
-                <h1 className="text-4xl">FILME</h1>
+                <Movie posterPath={'/nkAt4a7KIPc7Fi1BhxNHhYYbe2b.jpg'} size="small"/>
+                <Movie posterPath={'/pK2FT1V3EH1hAGgQLt0upTyv1Un.jpg'} size="small"/>
+                <Movie posterPath={'/2rBUaC6ngeFmYXjL4KA3eLjt5wA.jpg'} size="small"/>
+                <Movie posterPath={'/t0AEzycJ6V8dLVlSudCUAA9mzgn.jpg'} size="small"/>
+                <Movie posterPath={'/ckdA057F1hpDIHedKG334vlRd.jpg'} size="small"/>
+                <Movie posterPath={'/gsFun8nATm52aGHeT8ueAel98nE.jpg'} size="small"/>
               </div>
 
             </div>
@@ -141,12 +149,12 @@ export default function Home() {
               
               {/* TODO */}
               <div className="flex flex-col">
-                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
-                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
-                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
-                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
-                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
-                <h1 className="text-4xl mt-4">AVALIAÇÃO</h1>
+                <Review />
+                <Review />
+                <Review />
+                <Review />
+                <Review />
+                <Review />
               </div>
 
             </div>

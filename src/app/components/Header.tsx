@@ -68,7 +68,7 @@ export default function Header() {
 
                 <div className="flex gap-10">
                     {/*  Links INICIO e FILMES  */}
-                    <Link href={"./"}>
+                    <Link href={"/"}>
                         <button>
                             <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">INICIO</span>
                         </button>
