@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "bucket.s3.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org"
+      }
     ],
   },
 };

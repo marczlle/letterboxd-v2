@@ -8,6 +8,16 @@ import Link from "next/link";
 import { Eye, Star, Heart, Play } from "lucide-react";
 import { getMovieByPosterPath } from "@/app/hooks/movie-service/route";
 
+// Função auxiliar para dividir strings com segurança, mesmo se forem nulas
+const safeSplit = (str: string | null | undefined): string[] => {
+    // Se a string for nula, indefinida ou vazia, retorna um array vazio
+    if (!str) {
+        return [];
+    }
+    // Caso contrário, divide e filtra para remover strings vazias (ex: "a,,b" vira ["a", "b"])
+    return str.split(', ').filter(item => item.trim() !== '');
+};
+
 interface MovieData {
     id: string;
     title: string;
@@ -57,8 +67,6 @@ export default function MovieInfo() {
         async function fetchMovie() {
             try {
                 console.log('🎬 PosterPath recebido:', posterPath); // DEBUG
-                console.log('🎬 Params completo:', params); // DEBUG
-
                 setLoading(true);
                 const movieData = await getMovieByPosterPath(posterPath);
 
@@ -66,22 +74,22 @@ export default function MovieInfo() {
 
                 // Transforma os dados da API no formato esperado
                 setMovie({
-                    id: movieData.id.toString(),
-                    title: movieData.title,
-                    overview: movieData.overview,
-                    release_date: movieData.release_date,
-                    runtime: movieData.runtime,
-                    genres: movieData.genres.split(', '),
-                    poster_path: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
-                    vote_average: movieData.vote_average || movieData.averagerating,
-                    popularity: movieData.popularity,
-                    num_votes: movieData.numvotes,
-                    homepage: movieData.homepage,
-                    director: movieData.directors,
-                    cast: movieData.cast.split(', '),
-                    writers: movieData.writers.split(', '),
-                    production_companies: movieData.production_companies.split(', '),
-                    keywords: movieData.keywords.split(', ')
+                    id: movieData.id?.toString() || 'N/A', // Proteção para id nulo
+                    title: movieData.title || 'Título Desconhecido',
+                    overview: movieData.overview || 'Sinopse não disponível.',
+                    release_date: movieData.release_date || '', // Deixa vazio se for nulo
+                    runtime: movieData.runtime || 0,
+                    genres: safeSplit(movieData.genres), // ✅ CORRIGIDO
+                    poster_path: `https://image.tmdb.org/t/p/original${movieData.poster_path}` || '/default-poster.jpg', // Adicione um poster padrão se quiser
+                    vote_average: movieData.vote_average || movieData.averagerating || 0,
+                    popularity: movieData.popularity || 0,
+                    num_votes: movieData.numvotes || 0,
+                    homepage: movieData.homepage || '#',
+                    director: movieData.directors || 'Desconhecido',
+                    cast: safeSplit(movieData.cast), // ✅ CORRIGIDO
+                    writers: safeSplit(movieData.writers), // ✅ CORRIGIDO
+                    production_companies: safeSplit(movieData.production_companies), // ✅ CORRIGIDO
+                    keywords: safeSplit(movieData.keywords) // ✅ CORRIGIDO
                 });
             } catch (err) {
                 console.error("❌ Erro ao buscar filme:", err);
@@ -160,7 +168,9 @@ export default function MovieInfo() {
                         {/* Título, direção e descrição do filme */}
                         <div className="flex flex-col gap-2">
                             <h1 className="text-3xl inline-block">
-                                {movie.title} ({new Date(movie.release_date).getFullYear()})
+                                {movie.title} 
+                                {/* Só mostra o ano se a data de lançamento existir */}
+                                {movie.release_date && ` (${new Date(movie.release_date).getFullYear()})`}
                             </h1>
                             <span className="text-slate-100 whitespace-nowrap text-[1.1rem]">
                                 Direção: {movie.director || 'Desconhecido'}

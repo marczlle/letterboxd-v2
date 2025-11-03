@@ -48,3 +48,26 @@ export async function getMovieById(movieId: number) {
         throw error;
     }
 }
+
+export async function getRandomMovie(limit: number) {
+    try {
+        const response = await fetch(
+            `https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/get-random-movie?limit=${limit}`,
+            {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Error fetching random movies: ${errorData.error}`);
+        }
+
+        const data = await response.json();
+        return data.movies; 
+    } catch (error) {
+        console.error("Error during random movie fetch:", error);
+        throw error;
+    }
+}

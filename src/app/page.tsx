@@ -1,12 +1,37 @@
+'use client'
 import Image from "next/image";
 import Header from './components/Header';
 import Movie from './components/Movie';
 import Link from "next/link";
 import Review from "@/app/components/Review";
 import { Heart, Star, Search, Info, User, MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getRandomMovie } from "@/app/hooks/movie-service/route";
+
+interface MovieType {
+  id: string | number;
+  poster_path: string;
+  title: string;
+  popularity: number | string;
+  vote_average: number | string; 
+}
 
 export default function Home() {
 
+  const [randomMovies, setRandomMovies] = useState<MovieType[]>([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        // Chama a API pedindo por 4 filmes
+        const random_movies = await getRandomMovie(4); 
+        setRandomMovies(random_movies); // Guarda os filmes no estado
+      } catch (error) {
+        console.error("Erro ao buscar filmes aleatórios:", error);
+      }
+    };
+    fetchMovies();
+  }, []);
 
   return (
     <main className="">
@@ -33,13 +58,24 @@ export default function Home() {
           <div className="absolute w-full h-[100px] bg-[#000DA1]/50 blur-[120px] top-0 left-0"></div>
         </div>
 
-        {/* Futuro componente de filmes */}
-        {/* TODO */}
+        {/* Componente de filmes, pega 4 filmes aleatorios e mostra */}
         <div className="flex flex-row justify-center items-center gap-8 mt-18">
-          <Movie posterPath={'/5uqz8MbGts35uO7ESz86kviVgFO.jpg'}/>
-          <Movie posterPath={'/gmjihTFH7ROwJuthIZvoLC99AtS.jpg'}/>
-          <Movie posterPath={'/lyQBXzOQSuE59IsHyhrp0qIiPAz.jpg'}/>
-          <Movie posterPath={'/gzPVbOSvGuS0KWBA8wf4omeFF4i.jpg'}/>
+          {randomMovies.length > 0 ? (
+            randomMovies.map((movie) => (
+              <Movie 
+                key={String(movie.id)}
+                id={String(movie.id)}
+                posterPath={movie.poster_path}
+                title={movie.title}
+                popularity={String(movie.popularity)}
+                averageRating={String(movie.vote_average)} 
+              />
+            ))
+          ) : (
+            [...Array(4)].map((_, index) => (
+              <div key={index} className="w-48 h-[288px] bg-slate-700 rounded-lg animate-pulse"></div>
+            ))
+          )}
         </div>
 
         {/* Content Wraper */}
@@ -90,7 +126,6 @@ export default function Home() {
 
                 <h1 className="text-1xl text-slate-300">FILMES MAIS VOTADOS</h1>
 
-                {/* TODO */}
                 <Link href={"/movies"}>
                   <button className="cursor-pointer">
                     <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
@@ -99,14 +134,14 @@ export default function Home() {
 
               </div>
 
-              {/* TODO */}
+              {/* TODO Lógica de buscar filmes com melhors Notas ou mais Votos */}
               <div className="flex flex-row gap-4">
-                <Movie posterPath={'/s0z9xkEjJ7x9V3OC7NhZmck2MSH.jpg'} size="small"/>
-                <Movie posterPath={'/gmjihTFH7ROwJuthIZvoLC99AtS.jpg'} size="small"/>
-                <Movie posterPath={'/frZj5djlU9hFEjMcL21RJZVuG5O.jpg'} size="small"/>
-                <Movie posterPath={'/vo6osRMn09BulzfMBlS2BlK9Sgq.jpg'} size="small"/>
-                <Movie posterPath={'/ewKJEjLSZEp1Qq4Dl9W9zEld5gp.jpg'} size="small"/>
-                <Movie posterPath={'/3BFR30kh0O3NKR1Sfea3HXCG6hw.jpg'} size="small"/>
+                <Movie posterPath={'/s0z9xkEjJ7x9V3OC7NhZmck2MSH.jpg'} size="small" title="Can I Do It Till I Need Glasses?" popularity="4087" averageRating="5.3"/>
+                <Movie posterPath={'/gmjihTFH7ROwJuthIZvoLC99AtS.jpg'} size="small" title="The James Dean Story" popularity="3836" averageRating="6.5"/>
+                <Movie posterPath={'/frZj5djlU9hFEjMcL21RJZVuG5O.jpg'} size="small" title="Pather Panchali" popularity="13069" averageRating="8.0"/>
+                <Movie posterPath={'/vo6osRMn09BulzfMBlS2BlK9Sgq.jpg'} size="small" title="Jürgen Roland’s St. Pauli-Report" popularity="1669" averageRating="3.0"/>
+                <Movie posterPath={'/ewKJEjLSZEp1Qq4Dl9W9zEld5gp.jpg'} size="small" title="Angels of the Street" popularity="928" averageRating="7.9"/>
+                <Movie posterPath={'/3BFR30kh0O3NKR1Sfea3HXCG6hw.jpg'} size="small" title="Casper's Haunted Christmas" popularity="974" averageRating="5.3"/>
               </div>
 
             </div>
@@ -117,7 +152,6 @@ export default function Home() {
 
                 <h1 className="text-1xl text-slate-300">ADICIONADOS RECENTEMENTE</h1>
 
-                {/* TODO */}
                 <Link href={"/movies"}>
                   <button className="cursor-pointer">
                     <h1 className="text-1xl text-slate-400 hover:text-slate-300">VER TODOS</h1>
@@ -126,14 +160,14 @@ export default function Home() {
 
               </div>
 
-              {/* TODO */}
+              {/* TODO Lógica de procurar filmes mais recentes */}
               <div className="flex flex-row gap-4">
-                <Movie posterPath={'/nkAt4a7KIPc7Fi1BhxNHhYYbe2b.jpg'} size="small"/>
-                <Movie posterPath={'/pK2FT1V3EH1hAGgQLt0upTyv1Un.jpg'} size="small"/>
-                <Movie posterPath={'/2rBUaC6ngeFmYXjL4KA3eLjt5wA.jpg'} size="small"/>
-                <Movie posterPath={'/t0AEzycJ6V8dLVlSudCUAA9mzgn.jpg'} size="small"/>
-                <Movie posterPath={'/ckdA057F1hpDIHedKG334vlRd.jpg'} size="small"/>
-                <Movie posterPath={'/gsFun8nATm52aGHeT8ueAel98nE.jpg'} size="small"/>
+                <Movie posterPath={'/nkAt4a7KIPc7Fi1BhxNHhYYbe2b.jpg'} title="Lars and the Real Girl" size="small" popularity="23641" averageRating="7.1"/>
+                <Movie posterPath={'/pK2FT1V3EH1hAGgQLt0upTyv1Un.jpg'} size="small" averageRating="4.3" title="Bottoms Up" popularity="3719"/>
+                <Movie posterPath={'/2rBUaC6ngeFmYXjL4KA3eLjt5wA.jpg'} size="small" title="The Ten Commandments" popularity="38304" averageRating="7.7"/>
+                <Movie posterPath={'/t0AEzycJ6V8dLVlSudCUAA9mzgn.jpg'} size="small" title="The Wedding Date" popularity="14423" averageRating="6.8"/>
+                <Movie posterPath={'/ckdA057F1hpDIHedKG334vlRd.jpg'} size="small" title="Horse Sense" popularity="3673" averageRating="6.9"/>
+                <Movie posterPath={'/gsFun8nATm52aGHeT8ueAel98nE.jpg'} size="small" title="Van Halsing" popularity="4554" averageRating="6.3"/>
               </div>
 
             </div>

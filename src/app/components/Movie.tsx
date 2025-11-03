@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 const sizeClasses: Record<string, string> = {
     small: "w-32",
     medium: "w-48",
     large: "w-64",
 };
+
+// Placeholder de fallback (pode trocar por um asset local ou outro link)
+const FALLBACK_POSTER = "/images/template.png";
 
 export default function Movie({
     size = "medium",
@@ -15,7 +18,6 @@ export default function Movie({
     popularity = "0",
     averageRating = "0",
     id = "0",
-    key = "0",
 }: {
     size?: "small" | "medium" | "large";
     posterPath?: string;
@@ -23,36 +25,42 @@ export default function Movie({
     popularity?: string;
     averageRating?: string;
     id?: string;
-    key?: string;
 }) {
-    const posterUrl = `https://image.tmdb.org/t/p/original/${posterPath}`;
-    const formattedPopularity = parseFloat(popularity).toFixed(0);
-    const formattedRating = parseFloat(averageRating).toFixed(1);
+    const [imgSrc, setImgSrc] = useState(
+        posterPath
+            ? `https://image.tmdb.org/t/p/original/${posterPath}`
+            : FALLBACK_POSTER
+    );
 
-    // Codifica o posterPath para usar na URL
+    const formattedPopularity = parseFloat(popularity);
+    const formattedRating = parseFloat(averageRating).toFixed(1);
     const encodedPosterPath = encodeURIComponent(posterPath);
 
     return (
         <Link href={`/movie/${encodedPosterPath}`}>
             <div className={`relative ${sizeClasses[size]} h-auto group cursor-pointer`}>
                 <Image
-                    src={posterUrl}
+                    src={imgSrc}
                     width={1000}
                     height={1500}
                     alt={title}
                     className={`object-cover w-full h-auto rounded-lg shadow-lg
                                 group-hover:scale-105 transition-transform duration-300
                                 bg-slate-300`}
+                    onError={() => setImgSrc(FALLBACK_POSTER)} // 👈 Fallback se der erro
                 />
-                {/* OVERLAY DE INFORMAÇÕES */}
-                <div className={`
-                    absolute inset-0 bg-black bg-opacity-75 rounded-lg
-                    flex flex-col items-center justify-center p-2
-                    opacity-0 group-hover:opacity-75
-                    transition-opacity duration-300
-                    pointer-events-none
-                    ${sizeClasses[size]} h-full
-                `}>
+
+                {/* Overlay de informações */}
+                <div
+                    className={`
+                        absolute inset-0 bg-black bg-opacity-75 rounded-lg
+                        flex flex-col items-center justify-center p-2
+                        opacity-0 group-hover:opacity-75
+                        transition-opacity duration-300
+                        pointer-events-none
+                        ${sizeClasses[size]} h-full
+                    `}
+                >
                     <h3 className="text-white text-lg font-bold text-center mb-2 leading-tight">
                         {title}
                     </h3>
