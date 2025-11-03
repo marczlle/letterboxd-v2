@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Header from "@/app/components/Header";
 import Review from "@/app/components/Review";
+import Chat from "@/app/components/Chat";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, Star, Heart, Play } from "lucide-react";
+import { Eye, Star, Heart, Play, Bot } from "lucide-react";
 import { getMovieByPosterPath } from "@/app/hooks/movie-service/route";
 
 // Função auxiliar para dividir strings com segurança, mesmo se forem nulas
@@ -61,16 +62,19 @@ export default function MovieInfo() {
     });
 
     const [loading, setLoading] = useState(true);
-    const [option, setOption] = useState('elenco'); // ✅ MOVIDO PARA AQUI
+    const [option, setOption] = useState('elenco');
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     useEffect(() => {
         async function fetchMovie() {
             try {
-                console.log('🎬 PosterPath recebido:', posterPath); // DEBUG
+                console.log('🎬 PosterPath recebido:', posterPath); 
+                console.log('🎬 Params completo:', params); 
+
                 setLoading(true);
                 const movieData = await getMovieByPosterPath(posterPath);
 
-                console.log('🎬 Dados recebidos da API:', movieData); // DEBUG
+                console.log('🎬 Dados recebidos da API:', movieData); 
 
                 // Transforma os dados da API no formato esperado
                 setMovie({
@@ -98,7 +102,7 @@ export default function MovieInfo() {
             }
         }
 
-        console.log('🎬 useEffect disparado. posterPath:', posterPath); // DEBUG
+        console.log('🎬 useEffect disparado. posterPath:', posterPath); 
 
         if (posterPath) {
             fetchMovie();
@@ -160,6 +164,13 @@ export default function MovieInfo() {
                                 <span className=" text-slate-300 hover:text-slate-100 fill-slate-100">Assistir Agora</span>
                             </Link>
                         </div>
+                        <button
+                            onClick={() => setIsChatOpen(true)}
+                            className="mt-4 flex flex-row justify-center items-center gap-2 bg-[#CC083E] p-2 px-6 rounded-xl text-white hover:bg-[#A80633] transition-colors"
+                        >
+                            <Bot className="w-6 h-6 shrink-0 text-white" />
+                            <span className="font-bold">Converse com o CinéZinho</span>
+                        </button>
                     </div>
                     {/* FIM da Imagem do Poster, view,likes e botão de assistir */}
 
@@ -280,7 +291,11 @@ export default function MovieInfo() {
 
                 </div>
             </section>
-
+            <Chat
+                isOpen={isChatOpen}
+                onClose={() => setIsChatOpen(false)}
+                movieTitle={movie.title}
+            />
         </main>
     );
 }
