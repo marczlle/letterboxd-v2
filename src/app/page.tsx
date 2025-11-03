@@ -159,18 +159,19 @@ export default function Home() {
 
             </div>
 
-            <div className="w-[40%]">
+            {/* TODO
+              <div className="w-[40%]">
 
-              <h1 className="text-1xl text-slate-300 border-b border-[#CC083E]">USUARIOS POPULARES</h1>
+                <h1 className="text-1xl text-slate-300 border-b border-[#CC083E]">USUARIOS POPULARES</h1>
 
-              {/* TODO */}
-              <div className="flex flex-col">
-                <h1 className="text-4xl mt-4">USUARIO</h1>
-                <h1 className="text-4xl mt-4">USUARIO</h1>
-                <h1 className="text-4xl mt-4">USUARIO</h1>
+                <div className="flex flex-col">
+                  <h1 className="text-4xl mt-4">USUARIO</h1>
+                  <h1 className="text-4xl mt-4">USUARIO</h1>
+                  <h1 className="text-4xl mt-4">USUARIO</h1>
+                </div>
+
               </div>
-
-            </div>
+            */}
 
           </div>  
           
