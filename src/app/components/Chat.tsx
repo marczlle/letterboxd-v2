@@ -62,7 +62,7 @@ export default function Chat({ isOpen, onClose, movieTitle }: ChatProps) {
             });
 
             if (!response.ok) {
-                throw new Error('Falha ao conectar com o CineBot');
+                throw new Error('Falha ao conectar com o CinéZinho');
             }
 
             const data = await response.json();
@@ -101,7 +101,7 @@ export default function Chat({ isOpen, onClose, movieTitle }: ChatProps) {
                 <div className="flex items-center justify-between pb-4 border-b border-slate-700">
                     <div className="flex items-center gap-2">
                         <Bot className="text-[#CC083E]" />
-                        <h2 className="text-xl font-bold text-white">CineBot</h2>
+                        <h2 className="text-xl font-bold text-white">CinéZinho</h2>
                     </div>
                     <button onClick={onClose} className="text-slate-400 hover:text-white">
                         <X size={24} />
@@ -130,7 +130,7 @@ export default function Chat({ isOpen, onClose, movieTitle }: ChatProps) {
                     {isLoading && (
                         <div className="flex justify-start">
                             <div className="px-4 py-3 rounded-lg bg-slate-700 text-slate-400">
-                                <span className="animate-pulse">CineBot está digitando...</span>
+                                <span className="animate-pulse">CinéZinho está digitando...</span>
                             </div>
                         </div>
                     )}
