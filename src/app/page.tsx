@@ -36,9 +36,9 @@ export default function Home() {
         {/* Futuro componente de filmes */}
         {/* TODO */}
         <div className="flex flex-row justify-center items-center gap-8 mt-18">
-          <Movie posterPath={'5uqz8MbGts35uO7ESz86kviVgFO.jpg'}/>
+          <Movie posterPath={'/5uqz8MbGts35uO7ESz86kviVgFO.jpg'}/>
           <Movie posterPath={'/gmjihTFH7ROwJuthIZvoLC99AtS.jpg'}/>
-          <Movie posterPath={'/92WK6MVknFcyBoYmhkH59jS3Xpv.jpg'}/>
+          <Movie posterPath={'/lyQBXzOQSuE59IsHyhrp0qIiPAz.jpg'}/>
           <Movie posterPath={'/gzPVbOSvGuS0KWBA8wf4omeFF4i.jpg'}/>
         </div>
 

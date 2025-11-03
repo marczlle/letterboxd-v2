@@ -1,11 +1,12 @@
 'use client';
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Header from "@/app/components/Header";
 import Review from "@/app/components/Review";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, Star, Heart, Play } from "lucide-react";
-import { useState } from 'react';
+import { getMovieByPosterPath } from "@/app/hooks/movie-service/route";
 
 interface MovieData {
     id: string;
@@ -26,8 +27,11 @@ interface MovieData {
     keywords: string[];
 }
 
-export default function MovieInfo({
-    movie = {
+export default function MovieInfo() {
+    const params = useParams();
+    const posterPath = decodeURIComponent(params.id as string);
+
+    const [movie, setMovie] = useState<MovieData>({
         id: "1",
         title: "The Shawshank Redemption",
         overview: "Dois homens presos formam um vínculo ao longo de vários anos, encontrando consolo e redenção através de atos de decência comum.",
@@ -44,13 +48,62 @@ export default function MovieInfo({
         writers: ["Stephen King", "Frank Darabont"],
         production_companies: ["Castle Rock Entertainment", "Columbia Pictures"],
         keywords: ["prison", "friendship", "hope", "escape", "wrongful imprisonment"]
-    },
-}: {
-    movie?: MovieData;
-}) {
-    // TODO Implementar um UseEffect pra pegar o ID do filme pela URL e buscar os dados pela API
+    });
 
-    const [option, setOption] = useState('elenco');
+    const [loading, setLoading] = useState(true);
+    const [option, setOption] = useState('elenco'); // ✅ MOVIDO PARA AQUI
+
+    useEffect(() => {
+        async function fetchMovie() {
+            try {
+                console.log('🎬 PosterPath recebido:', posterPath); // DEBUG
+                console.log('🎬 Params completo:', params); // DEBUG
+
+                setLoading(true);
+                const movieData = await getMovieByPosterPath(posterPath);
+
+                console.log('🎬 Dados recebidos da API:', movieData); // DEBUG
+
+                // Transforma os dados da API no formato esperado
+                setMovie({
+                    id: movieData.id.toString(),
+                    title: movieData.title,
+                    overview: movieData.overview,
+                    release_date: movieData.release_date,
+                    runtime: movieData.runtime,
+                    genres: movieData.genres.split(', '),
+                    poster_path: `https://image.tmdb.org/t/p/original${movieData.poster_path}`,
+                    vote_average: movieData.vote_average || movieData.averagerating,
+                    popularity: movieData.popularity,
+                    num_votes: movieData.numvotes,
+                    homepage: movieData.homepage,
+                    director: movieData.directors,
+                    cast: movieData.cast.split(', '),
+                    writers: movieData.writers.split(', '),
+                    production_companies: movieData.production_companies.split(', '),
+                    keywords: movieData.keywords.split(', ')
+                });
+            } catch (err) {
+                console.error("❌ Erro ao buscar filme:", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        console.log('🎬 useEffect disparado. posterPath:', posterPath); // DEBUG
+
+        if (posterPath) {
+            fetchMovie();
+        }
+    }, [posterPath]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#14181d] flex items-center justify-center">
+                <div className="text-white">Carregando...</div>
+            </div>
+        );
+    }
 
     return (
         <main className="">
@@ -59,11 +112,11 @@ export default function MovieInfo({
 
             <Image
                 src={movie.poster_path}
-                width={1478} // Pode ser um valor grande o suficiente ou deixar o layout gerenciar
-                height={829} // Manter a altura atual para que toque levemente o conteúdo
+                width={1478}
+                height={829}
                 alt="Background Image"
                 className="absolute lg:top-[-150] md:top-0 left-0 -z-10 w-full h-[829px] object-cover object-center mask-[linear-gradient(to_bottom,black_30%,transparent_100%)]"
-            />            
+            />
 
             {/* Blur embaixo da Header */}
             <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -82,26 +135,26 @@ export default function MovieInfo({
                             alt={movie.title}
                             className="object-cover shadow-lg rounded-3xl"
                         />
-                        
+
                         <div className="flex flex-row items-center gap-2 mt-2">
-                            <Eye className="w-10 h-10 shrink-0 text-[#00d471]"/>
+                            <Eye className="w-10 h-10 shrink-0 text-[#00d471]" />
                             <span className="font-bold">{movie.popularity}</span>
-                            <Star className="w-8 h-8 shrink-0 text-[#eeff55] fill-[#eeff55]"/>
+                            <Star className="w-8 h-8 shrink-0 text-[#eeff55] fill-[#eeff55]" />
                             <span className="font-bold">{movie.vote_average}</span>
-                            <Heart className="w-8 h-8 shrink-0 text-[#ff5571] fill-[#ff5571]"/>
+                            <Heart className="w-8 h-8 shrink-0 text-[#ff5571] fill-[#ff5571]" />
                             <span className="font-bold">{movie.num_votes}</span>
                         </div>
                         {/* Botão para assistir ao filme */}
                         <div className="mt-6 flex flex-row justify-center items-center gap-1 bg-slate-800 p-1 px-6 rounded-xl">
                             <h1 className="text-slate-300 whitespace-nowrap">Pagina Oficial:</h1>
                             <Link href={movie.homepage || '#'} className="flex flex-row gap-1 justify-center items-center cursor-pointer leading-none">
-                                <Play className="w-8 h-8 shrink-0 text-slate-300 fill-slate-300 hover:text-slate-100 hover:fill-slate-100"/>
+                                <Play className="w-8 h-8 shrink-0 text-slate-300 fill-slate-300 hover:text-slate-100 hover:fill-slate-100" />
                                 <span className=" text-slate-300 hover:text-slate-100 fill-slate-100">Assistir Agora</span>
                             </Link>
                         </div>
                     </div>
                     {/* FIM da Imagem do Poster, view,likes e botão de assistir */}
-                    
+
                     <div className="flex flex-col items-center ml-8 mt-4">
 
                         {/* Título, direção e descrição do filme */}
@@ -118,7 +171,7 @@ export default function MovieInfo({
 
                         <div className="flex flex-col w-full mt-6">
 
-                            
+
                             <div className="flex flex-row gap-4 border-b border-slate-600 pb-1">
                                 <span onClick={() => setOption("elenco")} className={` ${option === 'elenco' ? "text-slate-100" : "text-red-500"} text-[1.3rem] mr-2 cursor-pointer`}>Elenco</span>
                                 <span onClick={() => setOption("detalhes")} className={` ${option === 'detalhes' ? "text-slate-100" : "text-red-500"} text-[1.3rem] mr-2 cursor-pointer`}>Detalhes</span>
@@ -143,10 +196,10 @@ export default function MovieInfo({
                                         <div className="flex flex-row flex-wrap">
                                             <h2 className="text-xl mb-2 mt-2">Escritores:</h2>
                                             {
-                                            movie.writers.map((writer, index) => (
-                                                <span key={index} className="m-2 p-1 px-2 rounded-[3px] bg-slate-800">
-                                                    {writer}
-                                                </span>
+                                                movie.writers.map((writer, index) => (
+                                                    <span key={index} className="m-2 p-1 px-2 rounded-[3px] bg-slate-800">
+                                                        {writer}
+                                                    </span>
                                                 ))
                                             }
                                         </div>
@@ -154,14 +207,14 @@ export default function MovieInfo({
                                         <div className="flex flex-row flex-wrap">
                                             <h2 className="text-xl mb-2 mt-2">Empresas Produtoras:</h2>
                                             {
-                                            movie.production_companies.map((companies, index) => (
-                                                <span key={index} className="m-2 p-1 px-2 rounded-[3px] bg-slate-800">
-                                                    {companies}
-                                                </span>
+                                                movie.production_companies.map((companies, index) => (
+                                                    <span key={index} className="m-2 p-1 px-2 rounded-[3px] bg-slate-800">
+                                                        {companies}
+                                                    </span>
                                                 ))
                                             }
                                         </div>
-                                        
+
                                         <div className="flex flex-row flex-wrap">
                                             <h2 className="text-xl mb-2 mt-2">Duração:</h2>
                                             <span className="m-2 p-1 px-2 rounded-[3px] bg-slate-800">
@@ -200,7 +253,7 @@ export default function MovieInfo({
                         <div className="w-full">
 
                             <h1 className="text-1xl text-slate-300 border-b border-[#CC083E]">AVALIAÇÕES</h1>
-                            
+
                             {/* TODO */}
                             <div className="flex flex-col">
                                 <Review />

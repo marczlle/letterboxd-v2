@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react"; // Não esqueça de importar React se usar JSX
+import React from "react";
 
 const sizeClasses: Record<string, string> = {
     small: "w-32",
@@ -26,11 +26,14 @@ export default function Movie({
     key?: string;
 }) {
     const posterUrl = `https://image.tmdb.org/t/p/original/${posterPath}`;
-    const formattedPopularity = parseFloat(popularity).toFixed(0); // Formata para número inteiro
-    const formattedRating = parseFloat(averageRating).toFixed(1); // Formata com uma casa decimal
+    const formattedPopularity = parseFloat(popularity).toFixed(0);
+    const formattedRating = parseFloat(averageRating).toFixed(1);
+
+    // Codifica o posterPath para usar na URL
+    const encodedPosterPath = encodeURIComponent(posterPath);
 
     return (
-        <Link href={`/movie/${id}`}>
+        <Link href={`/movie/${encodedPosterPath}`}>
             <div className={`relative ${sizeClasses[size]} h-auto group cursor-pointer`}>
                 <Image
                     src={posterUrl}
@@ -54,7 +57,6 @@ export default function Movie({
                         {title}
                     </h3>
                     <div className="flex items-center text-white text-sm mb-1">
-                        {/* Ícone de Olho para Popularidade */}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-8 w-8 mr-1 text-blue-300"
@@ -77,7 +79,6 @@ export default function Movie({
                         <span className="text-2xl">{formattedPopularity}</span>
                     </div>
                     <div className="flex items-center text-white text-sm">
-                        {/* Ícone de Estrela para Avaliação */}
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-8 w-8 mr-1 text-yellow-400"
