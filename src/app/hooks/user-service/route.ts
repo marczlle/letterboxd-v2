@@ -1,6 +1,6 @@
 export async function registerUser(userName: string, email: string, password: string) {
     try {
-        const response = await fetch("https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/user-service/register", {
+        const response = await fetch("https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/user-service/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -25,7 +25,7 @@ export async function registerUser(userName: string, email: string, password: st
 
 export async function login(usuario: string, senha: string) {
     try {
-        const response = await fetch("https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/user-service/login", {
+        const response = await fetch("https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/user-service/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -50,7 +50,7 @@ export async function login(usuario: string, senha: string) {
 
 export async function authenticateUser() {
     try {
-        const response = await fetch("https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/user-service/auth", {
+        const response = await fetch("https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/user-service/auth", {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: 'include'

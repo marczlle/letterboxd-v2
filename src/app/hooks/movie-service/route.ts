@@ -52,7 +52,7 @@ export async function getMovieById(movieId: number) {
 export async function getRandomMovie(limit: number) {
     try {
         const response = await fetch(
-            `https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/get-random-movie?limit=${limit}`,
+            `https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/get-random-movie?limit=${limit}`,
             {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
@@ -73,7 +73,7 @@ export async function getRandomMovie(limit: number) {
 }
 
 // A URL base do seu endpoint (sem a query string)
-const SEARCH_API_URL = 'https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/search-movie';
+const SEARCH_API_URL = 'https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/search-movie';
 
 export async function searchMoviesByName(query: string) {
     // 1. Se a busca for vazia, retorna um array vazio.
