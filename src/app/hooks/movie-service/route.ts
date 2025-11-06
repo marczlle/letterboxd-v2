@@ -4,7 +4,7 @@ export async function getMovieByPosterPath(posterPath: string) {
         const encodedPosterPath = encodeURIComponent(posterPath);
 
         const response = await fetch(
-            `https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/get-movie?poster_path=${encodedPosterPath}`,
+            `https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/get-movie?poster_path=${encodedPosterPath}`,
             {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
