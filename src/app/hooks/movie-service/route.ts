@@ -28,7 +28,7 @@ export async function getMovieByPosterPath(posterPath: string) {
 export async function getMovieById(movieId: number) {
     try {
         const response = await fetch(
-            `https://ekpb5msly3.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/get-movie-by-id?id=${movieId}`,
+            `https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/movie-service/get-movie-by-id?id=${movieId}`,
             {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
