@@ -49,7 +49,7 @@ export default function Header() {
     }
 
     return (
-        <section className="flex flex-row bg-[#010512] items-center gap-3 py-4 px-24 shadow-md">
+        <section className="flex flex-row bg-[#010512] items-center gap-3 py-6 px-24 shadow-md">
 
             {/* Modal de Cadastro */}
             {!isCadastroOpen ? null : (
@@ -76,6 +76,11 @@ export default function Header() {
                     <Link href={"./movies"}>
                         <button>
                             <span className="text-[1rem] font-bold hover:text-[#df0643] cursor-pointer">FILMES</span>
+                        </button>
+                    </Link>
+                    <Link href={"./bilheteria"}>
+                        <button>
+                            <span className="text-[1rem] font-bold hover:text-[#df0643] cursor-pointer">EM CARTAZ</span>
                         </button>
                     </Link>
                     <div>

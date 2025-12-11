@@ -73,9 +73,14 @@ export default function Header() {
                             <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">INICIO</span>
                         </button>
                     </Link>
-                    <Link href={"./movies"}>
+                    <Link href={"../movies"}>
                         <button>
                             <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">FILMES</span>
+                        </button>
+                    </Link>
+                    <Link href={"./bilheteria"}>
+                        <button>
+                            <span className="text-[1.3rem] hover:text-[#df0643] cursor-pointer">EM CARTAZ</span>
                         </button>
                     </Link>
                     <div>
