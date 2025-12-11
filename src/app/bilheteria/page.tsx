@@ -1,17 +1,11 @@
 'use client';
 import HeaderBg from "@/app/components/HeaderBg";
 import Movie from "@/app/components/Movie";
-import SeatSelectorModal from "@/app/components/SeatSelectorModal";
+import Link from "next/link";
 import { useState } from "react";
+import SeatSelectorModal from "@/app/components/SeatSelectorModal";
 
 export default function Bilheteria() {
-    // ===== Estado do Modal =====
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedSession, setSelectedSession] = useState<{
-        filme: string;
-        horario: string;
-        dia: string;
-    } | null>(null);
 
     // ===== Gera hoje + 8 dias =====
     const dias = Array.from({ length: 9 }).map((_, i) => {
@@ -26,6 +20,7 @@ export default function Bilheteria() {
     });
 
     const [selectedDay, setSelectedDay] = useState(dias[0]);
+    const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
 
     // ==== MOCK: Sessões por filme (você troca pela API depois) ====
     const sessoes = ["14:00", "16:30", "18:00", "20:15"];
@@ -34,24 +29,8 @@ export default function Bilheteria() {
         { poster: "/gsFun8nATm52aGHeT8ueAel98nE.jpg", title: "Van Halsing", pop: "4554", rate: "6.3" },
         { poster: "/gmjihTFH7ROwJuthIZvoLC99AtS.jpg", title: "The James Dean Story", pop: "3836", rate: "6.5" },
         { poster: "/frZj5djlU9hFEjMcL21RJZVuG5O.jpg", title: "Pather Panchali", pop: "13069", rate: "8.0" },
-        { poster: "/vo6osRMn09BulzfMBlS2BlK9Sgq.jpg", title: "Jürgen Roland's St. Pauli-Report", pop: "1669", rate: "3.0" }
+        { poster: "/vo6osRMn09BulzfMBlS2BlK9Sgq.jpg", title: "Jürgen Roland’s St. Pauli-Report", pop: "1669", rate: "3.0" }
     ];
-
-    // ===== Função para abrir o modal =====
-    const handleSessionClick = (filme: string, horario: string) => {
-        setSelectedSession({
-            filme,
-            horario,
-            dia: `${selectedDay.diaSemana} ${selectedDay.diaNumero}/${selectedDay.mes}`
-        });
-        setIsModalOpen(true);
-    };
-
-    // ===== Função para fechar o modal =====
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-        setSelectedSession(null);
-    };
 
     return (
         <section>
@@ -125,8 +104,8 @@ export default function Bilheteria() {
                                         {sessoes.map((hora, i) => (
                                             <button
                                                 key={i}
-                                                onClick={() => handleSessionClick(f.title, hora)}
                                                 className="px-4 py-2 bg-[#CC083E] text-white rounded hover:bg-[#a60633] transition cursor-pointer"
+                                                onClick={() => setIsSeatModalOpen(true)}
                                             >
                                                 {hora}
                                             </button>
@@ -141,11 +120,12 @@ export default function Bilheteria() {
 
                 </div>
             </section>
-
-            {/* ===== Modal de Seleção de Assentos ===== */}
-            <SeatSelectorModal 
-                isOpen={isModalOpen} 
-                onClose={handleCloseModal}
+            {/* Modal de Seleção de Assentos */}
+            <SeatSelectorModal
+                isOpen={isSeatModalOpen}
+                onClose={() => setIsSeatModalOpen(false)}
+                sessionId="S001"
+                wsUrl="ws://localhost:8000/ws/reserva"
             />
         </section>
     )

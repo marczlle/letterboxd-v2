@@ -12,17 +12,21 @@ export default function Login({ setIsLoginOpen }: { setIsLoginOpen: (value: bool
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true);
-
-        login(usuario, senha)
-            .then((data) => {
-                console.log("User logged in successfully:", data);
-            }) .catch((error) => {
-                console.error("Error logging in user:", error);
-            });
-
-        // fecha o modal
-        setIsLoginOpen(false);
-        setLoading(false);
+    
+        try {
+            const data = await login(usuario, senha);
+            console.log("User logged in successfully:", data);
+    
+            // fecha o modal
+            setIsLoginOpen(false);
+    
+            // recarrega a página pra atualizar infos do usuário
+            window.location.reload();
+        } catch (error) {
+            console.error("Error logging in user:", error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
