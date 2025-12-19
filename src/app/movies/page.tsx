@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from "react";
 import HeaderBg from "@/app/components/HeaderBg";
-import { getRandomMovie, searchMoviesByName } from "@/app/hooks/movie-service/route";
+import { getRandomMovie, searchMoviesByName } from "@/app/hooks/movie-service/service";
 import Movie from "@/app/components/Movie";
 import Link from "next/link";
 
@@ -57,10 +57,7 @@ export default function Movies() {
     };
 
     useEffect(() => {
-        if (!searchQuery.trim()) {
-            setSearchResults([]);
-            return;
-        }
+        if (!searchQuery.trim()) return;
 
         const timeout = setTimeout(async () => {
             setIsSearching(true);
@@ -90,7 +87,19 @@ export default function Movies() {
                                 className="bg-[#23282c] border border-slate-600 p-1 rounded-[3px] text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#CC083E] w-96"
                                 placeholder="Digite o nome do filme..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e) => {
+
+                                    const value = e.target.value;
+
+                                    setSearchQuery(value);
+
+                                    if (!value.trim()) {
+
+                                        setSearchResults([]);
+
+                                    }
+
+                                }}
                             />
                         </form>
 

@@ -7,9 +7,9 @@ import Chat from "@/app/components/Chat";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, Star, Heart, Play, Bot, Send } from "lucide-react";
-import { getMovieByPosterPath } from "@/app/hooks/movie-service/route";
-import { getReviewsByMovieId, submitReview } from "@/app/hooks/review-service/route";
-import { authenticateUser } from "@/app/hooks/user-service/route";
+import { getMovieByPosterPath } from "@/app/hooks/movie-service/service";
+import { getReviewsByMovieId, submitReview } from "@/app/hooks/review-service/service";
+import { authenticateUser } from "@/app/hooks/user-service/service";
 
 // Função auxiliar para dividir strings com segurança
 const safeSplit = (str: string | null | undefined): string[] => {
@@ -50,7 +50,12 @@ export default function MovieInfo() {
 
     // --- ESTADOS DO USUÁRIO ---
     // Guarda os dados do usuário logado (vindo do back-end)
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    type CurrentUser = {
+        id: string | number;
+        usuario: string;
+    } & Record<string, unknown>;
+
+    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
 
     // --- ESTADOS DO FILME ---
     const [movie, setMovie] = useState<MovieData>({
@@ -196,10 +201,11 @@ export default function MovieInfo() {
                 setUserReview('');
             }, 3000);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             // --- LOGICA PARA 1 REVIEW POR FILME ---
             // Verifica se a mensagem de erro contém o aviso de duplicidade do Postgres
-            if (error.message.includes("unique constraint") || error.message.includes("duplicate key")) {
+             const message = error instanceof Error ? error.message : String(error);
+            if (message.includes("unique constraint") || message.includes("duplicate key")) {
                 alert('Você já avaliou este filme! Só é permitido uma avaliação por filme.');
             } else {
                 console.error(error);

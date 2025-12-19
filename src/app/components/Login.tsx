@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { login } from "@/app/hooks/user-service/route";
+import { login } from "@/app/hooks/user-service/service";
 
 export default function Login({ setIsLoginOpen }: { setIsLoginOpen: (value: boolean) => void }) {
     const [usuario, setUsuario] = useState("");
