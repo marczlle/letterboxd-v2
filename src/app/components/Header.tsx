@@ -3,7 +3,7 @@ import Image from "next/image";
 import Login from "./Login";
 import Cadastro from "./Cadastro";
 import React, { useState, useEffect } from "react";
-import { authenticateUser } from "@/app/hooks/user-service/route";
+import { authenticateUser } from "@/app/hooks/user-service/service";
 import Link from "next/link";
 
 export default function Header() {
@@ -13,7 +13,7 @@ export default function Header() {
     // GERENCIAMENTO DE ESTADO DO USUÁRIO
     interface User {
         usuario: string;
-        [key: string]: any;
+        [key: string]: unknown;
     }
 
     const [user, setUser] = useState<User | null>(null);

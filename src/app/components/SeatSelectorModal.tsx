@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, JSX } from 'react';
+import { useState, useEffect, useRef, JSX, useId } from 'react';
 
 interface SeatSelectorModalProps {
   isOpen: boolean;
@@ -38,7 +38,26 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
   sessionId = "S001", 
   wsUrl = "ws://localhost:8000/ws/reserva" 
 }) => {
-  const [seatState, setSeatState] = useState<Map<string, SeatStateType>>(new Map());
+  const ROWS: string[] = ["J", "I", "H", "G", "F", "E", "D", "C", "B", "A"];
+  const LEFT_SEATS: number = 14;
+  const RIGHT_SEATS: number = 6;
+  const WHEELCHAIR: Set<string> = new Set(["A01", "A02", "A17", "A18"]);
+
+  const reactId = useId();
+  const idSuffix =
+    reactId.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase() || "USER";
+  const userId = `USR-${idSuffix}`;
+
+  const [seatState, setSeatState] = useState<Map<string, SeatStateType>>(() => {
+    const initialState = new Map<string, SeatStateType>();
+    ROWS.forEach(row => {
+      for (let i = 1; i <= LEFT_SEATS + RIGHT_SEATS; i++) {
+        const seatId = row + String(i).padStart(2, "0");
+        initialState.set(seatId, "available");
+      }
+    });
+    return initialState;
+  });
   const [selectedSeats, setSelectedSeats] = useState<Set<string>>(new Set());
   const [statusMessage, setStatusMessage] = useState<string>("Conectando ao servidor...");
   const [statusTone, setStatusTone] = useState<StatusTone>("info");
@@ -46,7 +65,6 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
   const [showLabels, setShowLabels] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(100);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormDataState>({ 
     nomeCompleto: '', 
@@ -56,72 +74,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
   
   const socketRef = useRef<WebSocket | null>(null);
 
-  const ROWS: string[] = ["J", "I", "H", "G", "F", "E", "D", "C", "B", "A"];
-  const LEFT_SEATS: number = 14;
-  const RIGHT_SEATS: number = 6;
-  const WHEELCHAIR: Set<string> = new Set(["A01", "A02", "A17", "A18"]);
-
-  useEffect(() => {
-    const randomToken = typeof crypto !== "undefined" && crypto.randomUUID
-      ? crypto.randomUUID().slice(0, 6)
-      : Math.random().toString(36).slice(2, 8);
-    setUserId("USR-" + randomToken.toUpperCase());
-  }, []);
-
-  useEffect(() => {
-    const initialState = new Map<string, SeatStateType>();
-    ROWS.forEach(row => {
-      for (let i = 1; i <= LEFT_SEATS + RIGHT_SEATS; i++) {
-        const seatId = row + String(i).padStart(2, "0");
-        initialState.set(seatId, "available");
-      }
-    });
-    setSeatState(initialState);
-  }, []);
-
-  useEffect(() => {
-    if (!isOpen || !userId) return;
-
-    const connectWebSocket = () => {
-      const socket = new WebSocket(wsUrl);
-      socketRef.current = socket;
-
-      socket.onopen = () => {
-        setStatusMessage("Conectado. Escolha seu assento.");
-        setStatusTone("success");
-      };
-
-      socket.onmessage = (event: MessageEvent) => {
-        const data = JSON.parse(event.data);
-        if (data.evento) {
-          handleBroadcast(data);
-        } else if (data.status) {
-          handleResponse(data);
-        }
-      };
-
-      socket.onerror = () => {
-        setStatusMessage("Erro na conexão. Tentando novamente...");
-        setStatusTone("error");
-      };
-
-      socket.onclose = () => {
-        setStatusMessage("Conexão perdida. Reconnecting...");
-        setStatusTone("error");
-        setTimeout(connectWebSocket, 1500);
-      };
-    };
-
-    connectWebSocket();
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-    };
-  }, [isOpen, userId, wsUrl]);
-
-  const handleBroadcast = (data: BroadcastMessage) => {
+  function handleBroadcast(data: BroadcastMessage) {
     const seatId = data.assento;
     
     switch (data.evento) {
@@ -143,9 +96,9 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
         pushActivity(`${seatId} reservado.`);
         break;
     }
-  };
+  }
 
-  const handleResponse = (data: ResponseMessage) => {
+  function handleResponse(data: ResponseMessage) {
     if (data.tipo === "confirmacao_pagamento") {
       handlePaymentResponse(data);
       return;
@@ -161,7 +114,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
       setStatusMessage(data.mensagem || "Operação realizada");
       setStatusTone("success");
     }
-  };
+  }
 
   const handlePaymentResponse = (data: ResponseMessage) => {
     setIsSubmitting(false);
@@ -227,6 +180,48 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
     });
     setActivityFeed(prev => [`[${timestamp}] ${message}`, ...prev].slice(0, 3));
   };
+
+  useEffect(() => {
+    if (!isOpen || !userId) return;
+
+    const connectWebSocket = () => {
+      const socket = new WebSocket(wsUrl);
+      socketRef.current = socket;
+
+      socket.onopen = () => {
+        setStatusMessage("Conectado. Escolha seu assento.");
+        setStatusTone("success");
+      };
+
+      socket.onmessage = (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+        if (data.evento) {
+          handleBroadcast(data);
+        } else if (data.status) {
+          handleResponse(data);
+        }
+      };
+
+      socket.onerror = () => {
+        setStatusMessage("Erro na conexão. Tentando novamente...");
+        setStatusTone("error");
+      };
+
+      socket.onclose = () => {
+        setStatusMessage("Conexão perdida. Reconnecting...");
+        setStatusTone("error");
+        setTimeout(connectWebSocket, 1500);
+      };
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, [isOpen, userId, wsUrl]);
 
   const handleSeatClick = (seatId: string) => {
     const current = seatState.get(seatId);

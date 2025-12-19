@@ -12,7 +12,12 @@ export async function getReviewsByMovieId(movieId: string) {
     return res.json();
 }
 
-export async function submitReview(movieId: string, reviewText: string, stars: number, user: any) {
+type SubmitReviewUser = {
+    id: string | number;
+    usuario: string;
+} & Record<string, unknown>;
+
+export async function submitReview(movieId: string, reviewText: string, stars: number, user: SubmitReviewUser) {
     const res = await fetch(`https://vkghs86aod.execute-api.us-east-1.amazonaws.com/WEB2/review-service/submit-review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

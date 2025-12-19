@@ -112,4 +112,3 @@ export async function searchMoviesByName(query: string) {
         throw error;
     }
 }
-
