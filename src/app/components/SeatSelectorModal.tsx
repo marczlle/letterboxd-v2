@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, JSX } from 'react';
+import { useState, useEffect, useRef, JSX, useId } from 'react';
 
 interface SeatSelectorModalProps {
   isOpen: boolean;
@@ -13,7 +13,7 @@ type StatusTone = 'info' | 'success' | 'error';
 interface FormDataState {
   nomeCompleto: string;
   cpf: string;
-  contato: string;
+  email: string;
 }
 
 interface BroadcastMessage {
@@ -38,7 +38,43 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
   sessionId = "S001", 
   wsUrl = "ws://localhost:8000/ws/reserva" 
 }) => {
-  const [seatState, setSeatState] = useState<Map<string, SeatStateType>>(new Map());
+  const ROWS: string[] = ["J", "I", "H", "G", "F", "E", "D", "C", "B", "A"];
+
+  const LEFT_SEATS: number = 14;
+
+  const RIGHT_SEATS: number = 6;
+
+  const WHEELCHAIR: Set<string> = new Set(["A01", "A02", "A17", "A18"]);
+
+
+  const reactId = useId();
+
+  const idSuffix =
+
+    reactId.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase() || "USER";
+
+  const userId = `USR-${idSuffix}`;
+
+
+  const [seatState, setSeatState] = useState<Map<string, SeatStateType>>(() => {
+
+    const initialState = new Map<string, SeatStateType>();
+
+    ROWS.forEach(row => {
+
+      for (let i = 1; i <= LEFT_SEATS + RIGHT_SEATS; i++) {
+
+        const seatId = row + String(i).padStart(2, "0");
+
+        initialState.set(seatId, "available");
+
+      }
+
+    });
+
+    return initialState;
+
+  });
   const [selectedSeats, setSelectedSeats] = useState<Set<string>>(new Set());
   const [statusMessage, setStatusMessage] = useState<string>("Conectando ao servidor...");
   const [statusTone, setStatusTone] = useState<StatusTone>("info");
@@ -46,38 +82,27 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
   const [showLabels, setShowLabels] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(100);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormDataState>({ 
     nomeCompleto: '', 
     cpf: '', 
-    contato: '' 
+    email: '' 
   });
   
   const socketRef = useRef<WebSocket | null>(null);
 
-  const ROWS: string[] = ["J", "I", "H", "G", "F", "E", "D", "C", "B", "A"];
-  const LEFT_SEATS: number = 14;
-  const RIGHT_SEATS: number = 6;
-  const WHEELCHAIR: Set<string> = new Set(["A01", "A02", "A17", "A18"]);
+  function handleBroadcast(data: BroadcastMessage) {
+    const seatId = data.assento;
+    
+    switch (data.evento) {
+      case "reserva":
+        pushActivity(`${seatId} reservado.`);
+        break;
+      default:
+        break;
+    }
+  }
 
-  useEffect(() => {
-    const randomToken = typeof crypto !== "undefined" && crypto.randomUUID
-      ? crypto.randomUUID().slice(0, 6)
-      : Math.random().toString(36).slice(2, 8);
-    setUserId("USR-" + randomToken.toUpperCase());
-  }, []);
-
-  useEffect(() => {
-    const initialState = new Map<string, SeatStateType>();
-    ROWS.forEach(row => {
-      for (let i = 1; i <= LEFT_SEATS + RIGHT_SEATS; i++) {
-        const seatId = row + String(i).padStart(2, "0");
-        initialState.set(seatId, "available");
-      }
-    });
-    setSeatState(initialState);
-  }, []);
 
   useEffect(() => {
     if (!isOpen || !userId) return;
@@ -121,29 +146,6 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
     };
   }, [isOpen, userId, wsUrl]);
 
-  const handleBroadcast = (data: BroadcastMessage) => {
-    const seatId = data.assento;
-    
-    switch (data.evento) {
-      case "assento_bloqueado":
-        if (data.usuario_bloqueador === userId) {
-          updateSeatState(seatId, "selected", `${seatId} bloqueado para você.`, "success");
-          pushActivity(`Você bloqueou ${seatId}.`);
-        } else {
-          updateSeatState(seatId, "blocked", `${seatId} bloqueado por outro usuário.`, "info");
-          pushActivity(`${seatId} bloqueado por ${data.usuario_bloqueador}.`);
-        }
-        break;
-      case "assento_liberado":
-        updateSeatState(seatId, "available", `${seatId} liberado (${data.motivo || "livre"}).`, "success");
-        pushActivity(`${seatId} liberado.`);
-        break;
-      case "assento_reservado":
-        updateSeatState(seatId, "reserved", `${seatId} reservado permanentemente.`, "info");
-        pushActivity(`${seatId} reservado.`);
-        break;
-    }
-  };
 
   const handleResponse = (data: ResponseMessage) => {
     if (data.tipo === "confirmacao_pagamento") {
@@ -180,7 +182,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
         return newSet;
       });
       
-      setFormData({ nomeCompleto: '', cpf: '', contato: '' });
+      setFormData({ nomeCompleto: '', cpf: '', email: '' });
     } else if (data.status === "erro") {
       setStatusMessage(data.mensagem || "Não foi possível confirmar o pagamento.");
       setStatusTone("error");
@@ -230,6 +232,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
 
   const handleSeatClick = (seatId: string) => {
     const current = seatState.get(seatId);
+
     if (["blocked", "reserved", "selected", "pending"].includes(current || "")) {
       setStatusMessage(`Assento ${seatId} indisponível no momento.`);
       setStatusTone("error");
@@ -266,7 +269,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
       return;
     }
 
-    if (!formData.nomeCompleto || !formData.cpf || !formData.contato) {
+    if (!formData.nomeCompleto || !formData.cpf || !formData.email) {
       setStatusMessage("Preencha todos os campos.");
       setStatusTone("error");
       return;
@@ -511,12 +514,12 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
               </label>
 
               <label className="flex flex-col gap-2">
-                <span className="text-sm text-[#8f9dc7]">Contato</span>
+                <span className="text-sm text-[#8f9dc7]">E-mail</span>
                 <input
                   type="text"
-                  value={formData.contato}
-                  onChange={(e) => setFormData({...formData, contato: e.target.value})}
-                  placeholder="(00) 00000-0000"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  placeholder="seuemail@gmail.com"
                   className="rounded-xl border border-white/15 bg-[#101b30] px-4 py-3 text-white"
                 />
               </label>

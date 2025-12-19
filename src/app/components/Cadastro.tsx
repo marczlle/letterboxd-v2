@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { registerUser } from "@/app/hooks/user-service/route";
+import { registerUser } from "@/app/hooks/user-service/service";
 
 export default function Cadastro({ setIsCadastroOpen }: { setIsCadastroOpen: (value: boolean) => void }) {
     const [email, setEmail] = useState("");
