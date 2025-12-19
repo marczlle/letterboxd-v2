@@ -1,7 +1,6 @@
 'use client';
 import HeaderBg from "@/app/components/HeaderBg";
 import Movie from "@/app/components/Movie";
-import Link from "next/link";
 import { useState } from "react";
 import SeatSelectorModal from "@/app/components/SeatSelectorModal";
 

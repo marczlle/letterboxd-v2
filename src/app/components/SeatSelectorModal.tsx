@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, JSX, useId } from 'react';
+import { useState, useEffect, useRef, JSX, useId, useCallback } from 'react';
 
 interface SeatSelectorModalProps {
   isOpen: boolean;
@@ -80,7 +80,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
   const [statusTone, setStatusTone] = useState<StatusTone>("info");
   const [activityFeed, setActivityFeed] = useState<string[]>([]);
   const [showLabels, setShowLabels] = useState<boolean>(false);
-  const [zoom, setZoom] = useState<number>(100);
+  const [zoom] = useState<number>(100);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormDataState>({ 
@@ -103,51 +103,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
     }
   }
 
-
-  useEffect(() => {
-    if (!isOpen || !userId) return;
-
-    const connectWebSocket = () => {
-      const socket = new WebSocket(wsUrl);
-      socketRef.current = socket;
-
-      socket.onopen = () => {
-        setStatusMessage("Conectado. Escolha seu assento.");
-        setStatusTone("success");
-      };
-
-      socket.onmessage = (event: MessageEvent) => {
-        const data = JSON.parse(event.data);
-        if (data.evento) {
-          handleBroadcast(data);
-        } else if (data.status) {
-          handleResponse(data);
-        }
-      };
-
-      socket.onerror = () => {
-        setStatusMessage("Erro na conexão. Tentando novamente...");
-        setStatusTone("error");
-      };
-
-      socket.onclose = () => {
-        setStatusMessage("Conexão perdida. Reconnecting...");
-        setStatusTone("error");
-        setTimeout(connectWebSocket, 1500);
-      };
-    };
-
-    connectWebSocket();
-
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-    };
-  }, [isOpen, userId, wsUrl]);
-
-
-  const handleResponse = (data: ResponseMessage) => {
+  const handleResponse = useCallback((data: ResponseMessage) => {
     if (data.tipo === "confirmacao_pagamento") {
       handlePaymentResponse(data);
       return;
@@ -163,9 +119,9 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
       setStatusMessage(data.mensagem || "Operação realizada");
       setStatusTone("success");
     }
-  };
+  }, []);
 
-  const handlePaymentResponse = (data: ResponseMessage) => {
+  const handlePaymentResponse = useCallback((data: ResponseMessage) => {
     setIsSubmitting(false);
     const confirmed = data.assentos_confirmados || [];
     const failed = data.assentos_falha || [];
@@ -191,9 +147,9 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
     if (failed.length) {
       pushActivity(`Falha ao confirmar: ${failed.join(", ")}.`);
     }
-  };
+  }, []);
 
-  const updateSeatState = (
+  const updateSeatState = useCallback((
     seatId: string, 
     state: SeatStateType, 
     message: string | null = null, 
@@ -219,16 +175,16 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
       setStatusMessage(message);
       setStatusTone(tone);
     }
-  };
+  }, []);
 
-  const pushActivity = (message: string) => {
+  const pushActivity = useCallback((message: string) => {
     const timestamp = new Date().toLocaleTimeString("pt-BR", {
       hour12: false,
       hour: "2-digit",
       minute: "2-digit"
     });
     setActivityFeed(prev => [`[${timestamp}] ${message}`, ...prev].slice(0, 3));
-  };
+  }, []);
 
   const handleSeatClick = (seatId: string) => {
     const current = seatState.get(seatId);
@@ -294,6 +250,49 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
     setStatusMessage("Processando pagamento...");
     setStatusTone("info");
   };
+
+
+  useEffect(() => {
+    if (!isOpen || !userId) return;
+
+    const connectWebSocket = () => {
+      const socket = new WebSocket(wsUrl);
+      socketRef.current = socket;
+
+      socket.onopen = () => {
+        setStatusMessage("Conectado. Escolha seu assento.");
+        setStatusTone("success");
+      };
+
+      socket.onmessage = (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+        if (data.evento) {
+          handleBroadcast(data);
+        } else if (data.status) {
+          handleResponse(data);
+        }
+      };
+
+      socket.onerror = () => {
+        setStatusMessage("Erro na conexão. Tentando novamente...");
+        setStatusTone("error");
+      };
+
+      socket.onclose = () => {
+        setStatusMessage("Conexão perdida. Reconnecting...");
+        setStatusTone("error");
+        setTimeout(connectWebSocket, 1500);
+      };
+    };
+
+    connectWebSocket();
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, [isOpen, userId, wsUrl, handleBroadcast, handleResponse]);
 
   const renderSeat = (row: string, number: number) => {
     const seatId = row + String(number).padStart(2, "0");
