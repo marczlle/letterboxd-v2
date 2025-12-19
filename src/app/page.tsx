@@ -87,11 +87,11 @@ export default function Home() {
             <div className="flex flex-row gap-4">
               <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
                 <Heart className="w-8 h-8 shrink-0 fill-slate-200"/>
-                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Mostre seus filmes mais curtidos com um "Gostei"</h1>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Compre ingressos para assistir filmes em cartaz</h1>
               </div>
               <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
                 <Star className="w-8 h-8 shrink-0 fill-slate-200"/>
-                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Avalie seu ultimo filme assistido de 0 a 5 estrelas</h1>
+                <h1 className="text-1xl text-slate-200 text-base leading-tight wrap-break-word">Avalie seu ultimo filme assistido de 0 a 10 estrelas</h1>
               </div>
               <div className="bg-slate-700 max-w-[300px] rounded-[3px] p-5 flex flex-row justify-center items-center gap-4">
                 <Search className="w-8 h-8 shrink-0 fill-slate-200"/>
@@ -173,41 +173,6 @@ export default function Home() {
             </div>
 
           </div>
-
-          {/* Avaliações e usuarios populares */}
-          <div className="flex flex-row mt-8 gap-24 w-full justify-between items-start">
-
-            <div className="w-[60%]">
-
-              <h1 className="text-1xl text-slate-300 border-b border-[#CC083E]">AVALIAÇÕES POPULARES ESSA SEMANA</h1>
-              
-              {/* TODO */}
-              <div className="flex flex-col">
-                <Review />
-                <Review />
-                <Review />
-                <Review />
-                <Review />
-                <Review />
-              </div>
-
-            </div>
-
-            {/* TODO
-              <div className="w-[40%]">
-
-                <h1 className="text-1xl text-slate-300 border-b border-[#CC083E]">USUARIOS POPULARES</h1>
-
-                <div className="flex flex-col">
-                  <h1 className="text-4xl mt-4">USUARIO</h1>
-                  <h1 className="text-4xl mt-4">USUARIO</h1>
-                  <h1 className="text-4xl mt-4">USUARIO</h1>
-                </div>
-
-              </div>
-            */}
-
-          </div>  
           
         </div>
 

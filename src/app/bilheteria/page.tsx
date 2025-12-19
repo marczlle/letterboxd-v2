@@ -125,7 +125,7 @@ export default function Bilheteria() {
                 isOpen={isSeatModalOpen}
                 onClose={() => setIsSeatModalOpen(false)}
                 sessionId="S001"
-                wsUrl="ws://localhost:8000/ws/reserva"
+                wsUrl="ws://13.222.117.47:8000/ws/reserva"
             />
         </section>
     )
