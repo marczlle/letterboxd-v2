@@ -91,100 +91,122 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
   
   const socketRef = useRef<WebSocket | null>(null);
 
-  function handleBroadcast(data: BroadcastMessage) {
+const pushActivity = useCallback((message: string) => {
+  const timestamp = new Date().toLocaleTimeString("pt-BR", {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  setActivityFeed((prev) => [`[${timestamp}] ${message}`, ...prev].slice(0, 3));
+}, []);
+ 
+const updateSeatState = useCallback(
+  (
+    seatId: string,
+    state: SeatStateType,
+    message: string | null = null,
+    tone: StatusTone = "info"
+  ) => {
+    setSeatState((prev) => {
+      const newState = new Map(prev);
+      newState.set(seatId, state);
+      return newState;
+    });
+ 
+    if (state === "selected") {
+      setSelectedSeats((prev) => new Set([...prev, seatId]));
+    } else {
+      setSelectedSeats((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(seatId);
+        return newSet;
+      });
+    }
+ 
+    if (message) {
+      setStatusMessage(message);
+      setStatusTone(tone);
+    }
+  },
+  []
+);
+ 
+const handlePaymentResponse = useCallback(
+  (data: ResponseMessage) => {
+    setIsSubmitting(false);
+    const confirmed = data.assentos_confirmados || [];
+    const failed = data.assentos_falha || [];
+ 
+    if ((data.status === "ok" || data.status === "parcial") && confirmed.length) {
+      setShowPaymentModal(false);
+      pushActivity(`Pagamento confirmado para ${confirmed.join(", ")}.`);
+      setStatusMessage(data.mensagem || "Pagamento confirmado");
+      setStatusTone(data.status === "ok" ? "success" : "info");
+ 
+      setSelectedSeats((prev) => {
+        const newSet = new Set(prev);
+        confirmed.forEach((seat) => newSet.delete(seat));
+        return newSet;
+      });
+ 
+      setFormData({ nomeCompleto: "", cpf: "", email: "" });
+    } else if (data.status === "erro") {
+      setStatusMessage(data.mensagem || "Não foi possível confirmar o pagamento.");
+      setStatusTone("error");
+    }
+ 
+    if (failed.length) {
+      pushActivity(`Falha ao confirmar: ${failed.join(", ")}.`);
+    }
+  },
+  [pushActivity] // <- ESTE DEP É O QUE ESTÁ FALTANDO NO SEU ERRO
+);
+ 
+const handleBroadcast = useCallback(
+  (data: BroadcastMessage) => {
     const seatId = data.assento;
-    
+ 
     switch (data.evento) {
-      case "reserva":
+      case "assento_bloqueado":
+        if (data.usuario_bloqueador === userId) {
+          updateSeatState(seatId, "selected", `${seatId} bloqueado para você.`, "success");
+          pushActivity(`Você bloqueou ${seatId}.`);
+        } else {
+          updateSeatState(seatId, "blocked", `${seatId} bloqueado por outro usuário.`, "info");
+          pushActivity(`${seatId} bloqueado por ${data.usuario_bloqueador}.`);
+        }
+        break;
+      case "assento_liberado":
+        updateSeatState(seatId, "available", `${seatId} liberado (${data.motivo || "livre"}).`, "success");
+        pushActivity(`${seatId} liberado.`);
+        break;
+      case "assento_reservado":
+        updateSeatState(seatId, "reserved", `${seatId} reservado permanentemente.`, "info");
         pushActivity(`${seatId} reservado.`);
         break;
-      default:
-        break;
     }
-  }
-
-  const handleResponse = useCallback((data: ResponseMessage) => {
+  },
+  [pushActivity, updateSeatState, userId]
+);
+ 
+const handleResponse = useCallback(
+  (data: ResponseMessage) => {
     if (data.tipo === "confirmacao_pagamento") {
       handlePaymentResponse(data);
       return;
     }
-
+ 
     if (data.status === "erro") {
-      if (data.assento) {
-        updateSeatState(data.assento, "available");
-      }
+      if (data.assento) updateSeatState(data.assento, "available");
       setStatusMessage(data.mensagem || "Erro desconhecido");
       setStatusTone("error");
     } else if (data.status) {
       setStatusMessage(data.mensagem || "Operação realizada");
       setStatusTone("success");
     }
-  }, []);
-
-  const handlePaymentResponse = useCallback((data: ResponseMessage) => {
-    setIsSubmitting(false);
-    const confirmed = data.assentos_confirmados || [];
-    const failed = data.assentos_falha || [];
-
-    if ((data.status === "ok" || data.status === "parcial") && confirmed.length) {
-      setShowPaymentModal(false);
-      pushActivity(`Pagamento confirmado para ${confirmed.join(", ")}.`);
-      setStatusMessage(data.mensagem || "Pagamento confirmado");
-      setStatusTone(data.status === "ok" ? "success" : "info");
-      
-      setSelectedSeats(prev => {
-        const newSet = new Set(prev);
-        confirmed.forEach(seat => newSet.delete(seat));
-        return newSet;
-      });
-      
-      setFormData({ nomeCompleto: '', cpf: '', email: '' });
-    } else if (data.status === "erro") {
-      setStatusMessage(data.mensagem || "Não foi possível confirmar o pagamento.");
-      setStatusTone("error");
-    }
-
-    if (failed.length) {
-      pushActivity(`Falha ao confirmar: ${failed.join(", ")}.`);
-    }
-  }, []);
-
-  const updateSeatState = useCallback((
-    seatId: string, 
-    state: SeatStateType, 
-    message: string | null = null, 
-    tone: StatusTone = "info"
-  ) => {
-    setSeatState(prev => {
-      const newState = new Map(prev);
-      newState.set(seatId, state);
-      return newState;
-    });
-
-    if (state === "selected") {
-      setSelectedSeats(prev => new Set([...prev, seatId]));
-    } else {
-      setSelectedSeats(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(seatId);
-        return newSet;
-      });
-    }
-
-    if (message) {
-      setStatusMessage(message);
-      setStatusTone(tone);
-    }
-  }, []);
-
-  const pushActivity = useCallback((message: string) => {
-    const timestamp = new Date().toLocaleTimeString("pt-BR", {
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-    setActivityFeed(prev => [`[${timestamp}] ${message}`, ...prev].slice(0, 3));
-  }, []);
+  },
+  [handlePaymentResponse, updateSeatState] // <- ESTES DEPS SÃO OS QUE ESTÃO FALTANDO NO SEU ERRO
+);
 
   const handleSeatClick = (seatId: string) => {
     const current = seatState.get(seatId);
