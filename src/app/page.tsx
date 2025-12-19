@@ -3,7 +3,7 @@ import Image from "next/image";
 import Header from './components/Header';
 import Movie from './components/Movie';
 import Link from "next/link";
-import Review from "@/app/components/Review";
+//import Review from "@/app/components/Review";
 import { Heart, Star, Search, Info, User, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getRandomMovie } from "@/app/hooks/movie-service/service";
