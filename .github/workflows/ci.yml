@@ -1,16 +1,11 @@
 name: CI
 
-
 on:
-
   pull_request:
-
   push:
-
     branches:
-
       - main
-
+      - homolog
   workflow_dispatch:
 
 
