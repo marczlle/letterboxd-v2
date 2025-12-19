@@ -4,6 +4,7 @@ import HeaderBg from "@/app/components/HeaderBg";
 import { getRandomMovie, searchMoviesByName } from "@/app/hooks/movie-service/service";
 import Movie from "@/app/components/Movie";
 import Link from "next/link";
+import Image from "next/image";
 
 interface MovieType {
     id: string | number;
@@ -115,18 +116,23 @@ export default function Movies() {
                                             return (
                                                 <li key={movie.id} className="p-2 hover:bg-slate-700 cursor-pointer">
                                                     <Link
-                                                        href={`/movie/${encodedPoster}`}
-                                                        className="flex items-center gap-2"
+                                                    href={`/movie/${encodedPoster}`}
+                                                    className="flex items-center gap-2"
                                                     >
-                                                        <img
-                                                            src={movie.poster_path
-                                                                ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
-                                                                : "https://placehold.co/40x60/23282c/eee?text=?"}
-                                                            alt={movie.title}
-                                                            className="w-10 h-15 object-cover rounded"
-                                                        />
-                                                        <span>{movie.title}</span>
+                                                    <Image
+                                                        src={
+                                                        movie.poster_path
+                                                            ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
+                                                            : "/images/template.png"
+                                                        }
+                                                        alt={movie.title}
+                                                        width={40}
+                                                        height={60}
+                                                        className="w-10 h-15 object-cover rounded"
+                                                    />
+                                                    <span>{movie.title}</span>
                                                     </Link>
+
                                                 </li>
                                             );
                                         })}

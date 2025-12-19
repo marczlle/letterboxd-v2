@@ -292,7 +292,7 @@ const SeatSelectorModal: React.FC<SeatSelectorModalProps> = ({
         socketRef.current.close();
       }
     };
-  }, [isOpen, userId, wsUrl, handleBroadcast, handleResponse]);
+  }, [handleBroadcast, handleResponse, isOpen, userId, wsUrl]);
 
   const renderSeat = (row: string, number: number) => {
     const seatId = row + String(number).padStart(2, "0");

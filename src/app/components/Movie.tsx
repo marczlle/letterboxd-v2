@@ -17,7 +17,6 @@ export default function Movie({
     title = "Sem título",
     popularity = "0",
     averageRating = "0",
-    id = "0",
 }: {
     size?: "small" | "medium" | "large";
     posterPath?: string;
