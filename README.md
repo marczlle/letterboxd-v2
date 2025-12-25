@@ -21,23 +21,23 @@ Além disso, existe um endpoint interno do próprio Next.js:
 
 ```mermaid
 flowchart TB
-  U[Usuário (Browser)] -->|HTTP| N[Next.js (App Router)]
+  U["Usuário (Browser)"] -->|HTTP| N["Next.js (App Router)"]
 
   %% Chat (Next.js API route)
-  N -->|POST /api/chat| CHAT[Next.js Route Handler<br/>src/app/api/chat/route.ts]
-  CHAT -->|HTTPS| OR[OpenRouter API]
+  N -->|POST /api/chat| CHAT["Next.js Route Handler\nsrc/app/api/chat/route.ts"]
+  CHAT -->|HTTPS| OR["OpenRouter API"]
 
   %% Serviços via API Gateway + Lambda + RDS
-  N -->|HTTPS (fetch)| APIGW[Amazon API Gateway<br/>movie-service / user-service / review-service]
-  APIGW --> L1[AWS Lambda<br/>auth/login/register]
-  APIGW --> L2[AWS Lambda<br/>getRandomMovie/search/getMovieInfo]
-  APIGW --> L3[AWS Lambda<br/>reviews/submit-review]
-  L1 --> RDS[(Amazon RDS)]
+  N -->|HTTPS (fetch)| APIGW["Amazon API Gateway\nmovie-service / user-service / review-service"]
+  APIGW --> L1["AWS Lambda\nauth/login/register"]
+  APIGW --> L2["AWS Lambda\ngetRandomMovie/search/getMovieInfo"]
+  APIGW --> L3["AWS Lambda\nreviews/submit-review"]
+  L1 --> RDS[("Amazon RDS")]
   L2 --> RDS
   L3 --> RDS
 
   %% Bilheteria em tempo real (EC2 + WebSocket)
-  N -->|WebSocket| EC2[EC2: servidor de reservas<br/>ws://.../ws/reserva]
+  N -->|WebSocket| EC2["EC2 (servidor de reservas)\nws://.../ws/reserva"]
   EC2 -->|broadcast/lock/reserve| U
 ```
 
