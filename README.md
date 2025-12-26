@@ -76,6 +76,8 @@ flowchart TB
 
 - **Filmes (catálogo / busca / detalhes)**:
 
+![1](public/images/1.jpeg)
+
   - A UI chama funções em `src/app/hooks/movie-service/service.ts`
 
   - Essas funções fazem `fetch` para endpoints do **API Gateway** (ex.: `.../movie-service/get-random-movie`, `.../movie-service/search-movie`, `.../movie-service/get-movie`)
@@ -84,6 +86,8 @@ flowchart TB
 
 
 - **Usuário (cadastro/login/autenticação)**:
+
+![7](public/images/7.jpeg)
 
   - A UI chama `src/app/hooks/user-service/service.ts`
 
@@ -94,6 +98,8 @@ flowchart TB
 
 - **Reviews**:
 
+![8](public/images/8.jpeg)
+
   - A UI chama `src/app/hooks/review-service/service.ts`
 
   - Leitura e envio usam endpoints do **API Gateway** (ex.: `.../review-service` e `.../review-service/submit-review`)
@@ -102,6 +108,8 @@ flowchart TB
 
 
 - **Bilheteria (Filmes em cartaz / escolha de sessão / sala distribuída)**:
+
+![4](public/images/4.jpeg)
 
   - A página `src/app/bilheteria/page.tsx` abre o modal `src/app/components/SeatSelectorModal.tsx` quando o usuário escolhe um horário
 
